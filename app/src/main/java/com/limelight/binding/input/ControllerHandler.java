@@ -65,6 +65,7 @@ public class ControllerHandler implements InputManager.InputDeviceListener, UsbD
 
     private final PreferenceConfiguration prefConfig;
     private short currentControllers, initialControllers;
+    private float gyrox, gyroy;
 
     public ControllerHandler(Activity activityContext, NvConnection conn, GameGestures gestures, PreferenceConfiguration prefConfig) {
         this.activityContext = activityContext;
@@ -130,6 +131,16 @@ public class ControllerHandler implements InputManager.InputDeviceListener, UsbD
         // currentControllers set which will allow them to properly unplug
         // if they are removed.
         initialControllers = getAttachedControllerMask(activityContext);
+
+        gyrox = 0;
+        gyroy = 0;
+    }
+
+    public void onGyro(short x, short y) {
+        defaultContext.rightStickX = (short) Math.max(Math.min(x*1000, 32000), -32000);
+        defaultContext.rightStickY = (short) Math.max(Math.min(-y*1000, 32000), -32000);
+
+        sendControllerInputPacket(defaultContext);
     }
 
     private static InputDevice.MotionRange getMotionRangeForJoystickAxis(InputDevice dev, int axis) {
@@ -1828,13 +1839,16 @@ public class ControllerHandler implements InputManager.InputDeviceListener, UsbD
 
         context.leftStickX = (short) (leftStickVector.getX() * 0x7FFE);
         context.leftStickY = (short) (-leftStickVector.getY() * 0x7FFE);
+        LimeLog.info("Left Stick X: " + context.leftStickX + " Y: " + context.leftStickY);
+        gyrox = 0;
+        gyroy = 0;
 
         Vector2d rightStickVector = populateCachedVector(rightStickX, rightStickY);
 
         handleDeadZone(rightStickVector, context.rightStickDeadzoneRadius);
 
-        context.rightStickX = (short) (rightStickVector.getX() * 0x7FFE);
-        context.rightStickY = (short) (-rightStickVector.getY() * 0x7FFE);
+        context.rightStickX = (short) ((rightStickVector.getX() + gyrox) * 0x7FFE);
+        context.rightStickY = (short) ((-rightStickVector.getY() + gyroy) * 0x7FFE);
 
         if (leftTrigger <= context.triggerDeadzone) {
             leftTrigger = 0;

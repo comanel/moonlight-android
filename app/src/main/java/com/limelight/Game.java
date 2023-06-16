@@ -197,9 +197,7 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
             short x = (short) (dx * -gyroSensitivity);
             short y = (short) (dy * gyroSensitivity);
-            conn.sendMouseMove(x, y);
-
-            // Process the gyroscope data, e.g., display it or use it in your app logic.
+            controllerHandler.onGyro(x, y);
         }
     }
 
