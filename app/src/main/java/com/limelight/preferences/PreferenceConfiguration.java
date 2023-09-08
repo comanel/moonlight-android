@@ -105,7 +105,7 @@ public class PreferenceConfiguration {
     public static final String RES_360P = "640x360";
     public static final String RES_480P = "854x480";
     public static final String RES_720P = "1280x720";
-    public static final String RES_1080P = "1920x1080";
+    public static final String RES_1080P = "1920x990";
     public static final String RES_1440P = "2560x1440";
     public static final String RES_4K = "3840x2160";
     public static final String RES_NATIVE = "Native";

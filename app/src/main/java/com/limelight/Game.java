@@ -195,10 +195,13 @@ public class Game extends Activity implements SurfaceHolder.Callback,
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             float dx = event.values[0];
             float dy = event.values[1];
+            float dz = event.values[2];
 
             short x = (short) (dx * -gyroSensitivity);
             short y = (short) (dy * gyroSensitivity);
-            controllerHandler.onGyro(x, y);
+            short z = (short) (dz * gyroSensitivity);
+            controllerHandler.onGyro(x, y, z);
+
         }
     }
 
